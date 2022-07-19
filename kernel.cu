@@ -19,6 +19,10 @@ using namespace glm;
 using namespace std;
 
 /*
+    Aquí van los kernels :D
+*/
+
+/*
     Load an OBJ file. Only triangular faces.
 */
 
