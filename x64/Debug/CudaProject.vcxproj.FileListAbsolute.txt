@@ -1,0 +1,1 @@
+C:\GLP\CudaProject\x64\Debug\CudaProject.exe
