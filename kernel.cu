@@ -8,7 +8,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
-#include <shader.hpp>
+//#include <shader.hpp>
 #include "glm/gtc/matrix_transform.hpp"
 #include <vector>
 #include "shape.h"
@@ -18,25 +18,29 @@
 using namespace glm;
 using namespace std;
 
-/*bool loadOBJ(
+/*
+    Load an OBJ file. Only triangular faces.
+*/
+
+bool loadOBJ(
     const char * path,
     vector < vec3 > & out_vertices,
     vector < vec2 > & out_uvs,
     vector < vec3 > & out_normals,
-    vector <vec3> & out_colors,
-    vec3 color
+    vector < unsigned int > & out_indexs
 ){
-    vector< unsigned int > vertexIndices, uvIndices, normalIndices, colorIndices;
+    vector< unsigned int > vertexIndices, uvIndices, normalIndices;
     vector< vec3 > temp_vertices;
     vector< vec2 > temp_uvs;
     vector< vec3 > temp_normals;
-    vector< vec3 > temp_colors;
+
     
     FILE * file = fopen(path, "r");
     if( file == NULL ){
         printf("Impossible to open the file !\n");
         return false;
     }
+    unsigned int index = 0;
     while (true) {
 
         char lineHeader[128];
@@ -61,7 +65,7 @@ using namespace std;
             temp_normals.push_back(normal);
         }
         else if (strcmp(lineHeader, "f") == 0) {
-            string vertex1, vertex2, vertex3;
+            //string vertex1, vertex2, vertex3;
             unsigned int vertexIndex[3], uvIndex[3], normalIndex[3];
             int matches = fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2]);
             if (matches != 9) {
@@ -71,13 +75,16 @@ using namespace std;
             vertexIndices.push_back(vertexIndex[0]);
             vertexIndices.push_back(vertexIndex[1]);
             vertexIndices.push_back(vertexIndex[2]);
+            out_indexs.push_back(index);
+            out_indexs.push_back(index+1);
+            out_indexs.push_back(index+2);
             uvIndices.push_back(uvIndex[0]);
             uvIndices.push_back(uvIndex[1]);
             uvIndices.push_back(uvIndex[2]);
             normalIndices.push_back(normalIndex[0]);
             normalIndices.push_back(normalIndex[1]);
             normalIndices.push_back(normalIndex[2]);
-            colorIndices.push_back(color[0]);
+            index += 3;
         }
     }
     // For each vertex of each triangle
@@ -85,13 +92,15 @@ using namespace std;
         unsigned int vertexIndex = vertexIndices[i];
         vec3 vertex = temp_vertices[vertexIndex - 1];
         out_vertices.push_back(vertex);
+        
     }
-}*/
+}
 
 GLFWwindow* window;
 
 Shape* square;
 Shape* square2;
+Shape* sphere;
 
 // The transform being used to draw our shape
 Transform3D transform;
@@ -210,8 +219,10 @@ int main(int argc, char **argv)
     vector< vec3 > colors;
     vector< vec2 > uvs;
     vector< vec3 > normals; // Won't be used at the moment.
+    vector< unsigned int > indicesOBJ;
     //vec3 color = vec3(0.5, 0.5, 0.8);
-    //bool res = loadOBJ("esfera.obj", verticesOBJ, uvs, normals, colors, color);
+    bool res = loadOBJ("esfera.obj", verticesOBJ, uvs, normals, indicesOBJ);
+    sphere = new Shape(verticesOBJ, indicesOBJ);
     //glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vec3), &vertices[0], GL_STATIC_DRAW);
     
     // In OpenGL, the Z-Axis points out of the screen.
@@ -239,8 +250,8 @@ int main(int argc, char **argv)
     cameraMatrixUniform = glGetUniformLocation(shaderProgram, "cameraView");
 
 
-    std::cout << "Use WASD to move, and the mouse to look around." << std::endl;
-    std::cout << "Press escape to exit" << std::endl;
+    cout << "Use WASD to move, and the mouse to look around." << endl;
+    cout << "Press escape to exit" << endl;
 
 
 
@@ -357,7 +368,10 @@ int main(int argc, char **argv)
 		square->Draw(shaderProgram,GL_QUADS, transform.GetMatrix(), worldMatrixUniform,color);
 
         vec3 color2 = vec3(0.28f, 0.95f, 0.93f);
-		square2->Draw(shaderProgram,GL_QUADS, transform.GetMatrix(), worldMatrixUniform,color2);
+		//square2->Draw(shaderProgram,GL_QUADS, transform.GetMatrix(), worldMatrixUniform,color2);
+
+        vec3 color3 = vec3(0.75f, 0.34f, 0.96f);
+        sphere->Draw(shaderProgram, GL_TRIANGLES, transform.GetMatrix(), worldMatrixUniform, color3);
 
 	    // Draw all indices in the index buffer
 	    //glDrawElements(GL_QUADS, indices.size(), GL_UNSIGNED_INT, (void*)0);
