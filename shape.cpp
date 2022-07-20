@@ -57,10 +57,10 @@ void Shape::Draw(GLuint shaderProgram, GLenum mode, glm::mat4 worldMatrix, GLuin
 	// Previously, we multiplied each vertex one by one, but now we just have to send the world matrix to the gpu.
 	// Bind the vertex buffer and set the Vertex Attribute.
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	//glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 24, (void*)12);
-	//glEnableVertexAttribArray(1);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 24, (void*)0);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 24, (void*)12);
+	glEnableVertexAttribArray(1);
 
 
 

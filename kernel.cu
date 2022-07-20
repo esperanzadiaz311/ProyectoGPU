@@ -156,11 +156,10 @@ bool loadOBJ(
         out_vertices.push_back(vertex[0]);
         out_vertices.push_back(vertex[1]);
         out_vertices.push_back(vertex[2]);
-        /*
-        out_vertices.push_back(0.2);
+        out_vertices.push_back(0.9);
         out_vertices.push_back(0.3);
         out_vertices.push_back(0.5);
-        */
+        
         
     }
 }
@@ -329,74 +328,60 @@ int main(int argc, char **argv)
     vertices.push_back(-1.0f); 
     vertices.push_back(-1.0f); 
     vertices.push_back(-1.0f);
-    /**
     vertices.push_back(0.9f);
     vertices.push_back(0.3f);
     vertices.push_back(0.8f);
-    */
+   
 
     vertices.push_back(-1.0f);
     vertices.push_back(-1.0f);
     vertices.push_back(1.0f);
-    /**
     vertices.push_back(0.9f);
     vertices.push_back(0.3f);
     vertices.push_back(0.8f);
-    */
+
 	//vertices.push_back(vec3(-1.0f, 1.0f, -1.0f));
     vertices.push_back(-1.0f);
     vertices.push_back(1.0f);
     vertices.push_back(-1.0f);
-    /**
     vertices.push_back(0.9f);
     vertices.push_back(0.3f);
     vertices.push_back(0.8f);
-    */
 	//vertices.push_back(vec3(-1.0f, 1.0f, 1.0f));
     vertices.push_back(-1.0f);
     vertices.push_back(1.0f);
     vertices.push_back(1.0f);
-    /**
     vertices.push_back(0.9f);
     vertices.push_back(0.3f);
     vertices.push_back(0.8f);
-    */
     //vertices.push_back(vec3(1.0f, -1.0f, -1.0f));
     vertices.push_back(1.0f);
     vertices.push_back(-1.0f);
     vertices.push_back(-1.0f);
-    /**
     vertices.push_back(0.9f);
     vertices.push_back(0.3f);
     vertices.push_back(0.8f);
-    */
     //vertices.push_back(vec3(1.0f, -1.0f, 1.0f));
     vertices.push_back(1.0f);
     vertices.push_back(-1.0f);
     vertices.push_back(1.0f);
-    /**
     vertices.push_back(0.9f);
     vertices.push_back(0.3f);
     vertices.push_back(0.8f);
-    */
     //vertices.push_back(vec3(1.0f, 1.0f, -1.0f));
     vertices.push_back(1.0f);
     vertices.push_back(1.0f);
     vertices.push_back(-1.0f);
-    /**
     vertices.push_back(0.9f);
     vertices.push_back(0.3f);
     vertices.push_back(0.8f);
-    */
     //vertices.push_back(vec3(1.0f, 1.0f, 1.0f));
     vertices.push_back(1.0f);
     vertices.push_back(1.0f);
     vertices.push_back(1.0f);
-    /**
     vertices.push_back(0.9f);
     vertices.push_back(0.3f);
     vertices.push_back(0.8f);
-    */
     
     /*
     vector<vec3> vertices2;
