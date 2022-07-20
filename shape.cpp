@@ -41,6 +41,7 @@ Shape::Shape(std::vector<float> vertices, std::vector<unsigned int> indices)
 	glBindBuffer(GL_ARRAY_BUFFER, m_indexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 }
 
 Shape::~Shape()
@@ -57,11 +58,12 @@ void Shape::Draw(GLuint shaderProgram, GLenum mode, glm::mat4 worldMatrix, GLuin
 	// Previously, we multiplied each vertex one by one, but now we just have to send the world matrix to the gpu.
 	// Bind the vertex buffer and set the Vertex Attribute.
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 24, (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 36, (void*)0);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 24, (void*)12);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 36, (void*)12);
 	glEnableVertexAttribArray(1);
-
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 36, (void*)24);
+	glEnableVertexAttribArray(2);
 
 
 	// Set the world matrix uniform

@@ -152,14 +152,18 @@ bool loadOBJ(
     // For each vertex of each triangle
     for (unsigned int i = 0; i < vertexIndices.size(); i++) {
         unsigned int vertexIndex = vertexIndices[i];
+        unsigned int normalIndex = normalIndices[i];
         vec3 vertex = temp_vertices[vertexIndex - 1];
+        vec3 normal = temp_normals[normalIndex - 1];
         out_vertices.push_back(vertex[0]);
         out_vertices.push_back(vertex[1]);
         out_vertices.push_back(vertex[2]);
         out_vertices.push_back(0.9);
         out_vertices.push_back(0.3);
         out_vertices.push_back(0.5);
-        
+        out_vertices.push_back(normal[0]);
+        out_vertices.push_back(normal[1]);
+        out_vertices.push_back(normal[2]);
         
     }
 }
@@ -200,7 +204,6 @@ vec3 calculateTranslate(vec3 vel0, float dt) {
 GLFWwindow* window;
 
 Shape* square;
-Shape* square2;
 Shape* sphere;
 
 // The transform being used to draw our shape
@@ -324,79 +327,146 @@ int main(int argc, char **argv)
 
 	// Create square vertex data.
 	vector<float> vertices;
-    
-    vertices.push_back(-1.0f); 
-    vertices.push_back(-1.0f); 
-    vertices.push_back(-1.0f);
-    vertices.push_back(0.9f);
-    vertices.push_back(0.3f);
-    vertices.push_back(0.8f);
-   
+    //-X
+    //0
+    vertices.push_back(-1.0f);vertices.push_back(-1.0f); vertices.push_back(-1.0f);
+    vertices.push_back(0.9f); vertices.push_back(0.3f);vertices.push_back(0.8f);
+    vertices.push_back(-1.0f); vertices.push_back(0.0f); vertices.push_back(0.0f);
+    //1
+    vertices.push_back(-1.0f);vertices.push_back(-1.0f);vertices.push_back(1.0f);
+    vertices.push_back(0.9f);vertices.push_back(0.3f);vertices.push_back(0.8f);
+    vertices.push_back(-1.0f); vertices.push_back(0.0f); vertices.push_back(0.0f);
+    //2
+    vertices.push_back(-1.0f);vertices.push_back(1.0f); vertices.push_back(-1.0f);
+    vertices.push_back(0.9f); vertices.push_back(0.3f);vertices.push_back(0.8f);
+    vertices.push_back(-1.0f); vertices.push_back(0.0f); vertices.push_back(0.0f);
+    //3
+    vertices.push_back(-1.0f);vertices.push_back(1.0f); vertices.push_back(1.0f);
+    vertices.push_back(0.9f);vertices.push_back(0.3f);vertices.push_back(0.8f);
+    vertices.push_back(-1.0f); vertices.push_back(0.0f); vertices.push_back(0.0f);
+    //+X
+    //4
+    vertices.push_back(1.0f);vertices.push_back(-1.0f);vertices.push_back(-1.0f);
+    vertices.push_back(0.9f);vertices.push_back(0.3f);vertices.push_back(0.8f);
+    vertices.push_back(-1.0f); vertices.push_back(0.0f); vertices.push_back(0.0f);
+    //5
+    vertices.push_back(1.0f);vertices.push_back(-1.0f);vertices.push_back(1.0f);
+    vertices.push_back(0.9f);vertices.push_back(0.3f); vertices.push_back(0.8f);
+    vertices.push_back(1.0f); vertices.push_back(0.0f); vertices.push_back(0.0f);
+    //6
+    vertices.push_back(1.0f);vertices.push_back(1.0f);vertices.push_back(-1.0f);
+    vertices.push_back(0.9f);vertices.push_back(0.3f);vertices.push_back(0.8f);
+    vertices.push_back(1.0f); vertices.push_back(0.0f); vertices.push_back(0.0f);
+    //7
+    vertices.push_back(1.0f); vertices.push_back(1.0f);vertices.push_back(1.0f);
+    vertices.push_back(0.9f); vertices.push_back(0.3f);vertices.push_back(0.8f);
+    vertices.push_back(1.0f); vertices.push_back(0.0f); vertices.push_back(0.0f);
 
-    vertices.push_back(-1.0f);
-    vertices.push_back(-1.0f);
-    vertices.push_back(1.0f);
-    vertices.push_back(0.9f);
-    vertices.push_back(0.3f);
-    vertices.push_back(0.8f);
+    //-Y
+    //0
+    vertices.push_back(-1.0f); vertices.push_back(-1.0f); vertices.push_back(-1.0f);
+    vertices.push_back(0.9f); vertices.push_back(0.3f); vertices.push_back(0.8f);
+    vertices.push_back(0.0f); vertices.push_back(-1.0f); vertices.push_back(0.0f);
+    //1
+    vertices.push_back(-1.0f); vertices.push_back(-1.0f); vertices.push_back(1.0f);
+    vertices.push_back(0.9f); vertices.push_back(0.3f); vertices.push_back(0.8f);
+    vertices.push_back(0.0f); vertices.push_back(-1.0f); vertices.push_back(0.0f);
+    //4
+    vertices.push_back(1.0f); vertices.push_back(-1.0f); vertices.push_back(-1.0f);
+    vertices.push_back(0.9f); vertices.push_back(0.3f); vertices.push_back(0.8f);
+    vertices.push_back(0.0f); vertices.push_back(-1.0f); vertices.push_back(0.0f);
+    //5
+    vertices.push_back(1.0f); vertices.push_back(-1.0f); vertices.push_back(1.0f);
+    vertices.push_back(0.9f); vertices.push_back(0.3f); vertices.push_back(0.8f);
+    vertices.push_back(0.0f); vertices.push_back(-1.0f); vertices.push_back(0.0f);
 
-	//vertices.push_back(vec3(-1.0f, 1.0f, -1.0f));
-    vertices.push_back(-1.0f);
-    vertices.push_back(1.0f);
-    vertices.push_back(-1.0f);
-    vertices.push_back(0.9f);
-    vertices.push_back(0.3f);
-    vertices.push_back(0.8f);
-	//vertices.push_back(vec3(-1.0f, 1.0f, 1.0f));
-    vertices.push_back(-1.0f);
-    vertices.push_back(1.0f);
-    vertices.push_back(1.0f);
-    vertices.push_back(0.9f);
-    vertices.push_back(0.3f);
-    vertices.push_back(0.8f);
-    //vertices.push_back(vec3(1.0f, -1.0f, -1.0f));
-    vertices.push_back(1.0f);
-    vertices.push_back(-1.0f);
-    vertices.push_back(-1.0f);
-    vertices.push_back(0.9f);
-    vertices.push_back(0.3f);
-    vertices.push_back(0.8f);
-    //vertices.push_back(vec3(1.0f, -1.0f, 1.0f));
-    vertices.push_back(1.0f);
-    vertices.push_back(-1.0f);
-    vertices.push_back(1.0f);
-    vertices.push_back(0.9f);
-    vertices.push_back(0.3f);
-    vertices.push_back(0.8f);
-    //vertices.push_back(vec3(1.0f, 1.0f, -1.0f));
-    vertices.push_back(1.0f);
-    vertices.push_back(1.0f);
-    vertices.push_back(-1.0f);
-    vertices.push_back(0.9f);
-    vertices.push_back(0.3f);
-    vertices.push_back(0.8f);
-    //vertices.push_back(vec3(1.0f, 1.0f, 1.0f));
-    vertices.push_back(1.0f);
-    vertices.push_back(1.0f);
-    vertices.push_back(1.0f);
-    vertices.push_back(0.9f);
-    vertices.push_back(0.3f);
-    vertices.push_back(0.8f);
-    
-    /*
-    vector<vec3> vertices2;
-    vertices2.push_back(vec3(-0.5f, -0.5f, -0.5f));
-	vertices2.push_back(vec3(-0.5f, -0.5f, 0.5f));
-	vertices2.push_back(vec3(-0.5f, 0.5f, -0.5f));
-	vertices2.push_back(vec3(-0.5f, 0.5f, 0.5f));
-    vertices2.push_back(vec3(0.5f, -0.5f, -0.5f));
-    vertices2.push_back(vec3(0.5f, -0.5f, 0.5f));
-    vertices2.push_back(vec3(0.5f, 0.5f, -0.5f));
-    vertices2.push_back(vec3(0.5f, 0.5f, 0.5f));
-    */
-   
+    //+Y
+    //2
+    vertices.push_back(-1.0f); vertices.push_back(1.0f); vertices.push_back(-1.0f);
+    vertices.push_back(0.9f); vertices.push_back(0.3f); vertices.push_back(0.8f);
+    vertices.push_back(0.0f); vertices.push_back(1.0f); vertices.push_back(0.0f);
+    //3
+    vertices.push_back(-1.0f); vertices.push_back(1.0f); vertices.push_back(1.0f);
+    vertices.push_back(0.9f); vertices.push_back(0.3f); vertices.push_back(0.8f);
+    vertices.push_back(0.0f); vertices.push_back(1.0f); vertices.push_back(0.0f);
+    //6
+    vertices.push_back(1.0f); vertices.push_back(1.0f); vertices.push_back(-1.0f);
+    vertices.push_back(0.9f); vertices.push_back(0.3f); vertices.push_back(0.8f);
+    vertices.push_back(0.0f); vertices.push_back(1.0f); vertices.push_back(0.0f);
+    //7
+    vertices.push_back(1.0f); vertices.push_back(1.0f); vertices.push_back(1.0f);
+    vertices.push_back(0.9f); vertices.push_back(0.3f); vertices.push_back(0.8f);
+    vertices.push_back(0.0f); vertices.push_back(1.0f); vertices.push_back(0.0f);
+
+    //-Z
+    //0
+    vertices.push_back(-1.0f); vertices.push_back(-1.0f); vertices.push_back(-1.0f);
+    vertices.push_back(0.9f); vertices.push_back(0.3f); vertices.push_back(0.8f);
+    vertices.push_back(0.0f); vertices.push_back(0.0f); vertices.push_back(-1.0f);
+    //2
+    vertices.push_back(-1.0f); vertices.push_back(1.0f); vertices.push_back(-1.0f);
+    vertices.push_back(0.9f); vertices.push_back(0.3f); vertices.push_back(0.8f);
+    vertices.push_back(0.0f); vertices.push_back(0.0f); vertices.push_back(-1.0f);
+    //4
+    vertices.push_back(1.0f); vertices.push_back(-1.0f); vertices.push_back(-1.0f);
+    vertices.push_back(0.9f); vertices.push_back(0.3f); vertices.push_back(0.8f);
+    vertices.push_back(0.0f); vertices.push_back(0.0f); vertices.push_back(-1.0f);
+    //6
+    vertices.push_back(1.0f); vertices.push_back(1.0f); vertices.push_back(-1.0f);
+    vertices.push_back(0.9f); vertices.push_back(0.3f); vertices.push_back(0.8f);
+    vertices.push_back(0.0f); vertices.push_back(0.0f); vertices.push_back(-1.0f);
+
+    //+Z
+    //1
+    vertices.push_back(-1.0f); vertices.push_back(-1.0f); vertices.push_back(1.0f);
+    vertices.push_back(0.9f); vertices.push_back(0.3f); vertices.push_back(0.8f);
+    vertices.push_back(0.0f); vertices.push_back(0.0f); vertices.push_back(1.0f);
+    //3
+    vertices.push_back(-1.0f); vertices.push_back(1.0f); vertices.push_back(1.0f);
+    vertices.push_back(0.9f); vertices.push_back(0.3f); vertices.push_back(0.8f);
+    vertices.push_back(0.0f); vertices.push_back(0.0f); vertices.push_back(1.0f);
+    //5
+    vertices.push_back(1.0f); vertices.push_back(-1.0f); vertices.push_back(1.0f);
+    vertices.push_back(0.9f); vertices.push_back(0.3f); vertices.push_back(0.8f);
+    vertices.push_back(0.0f); vertices.push_back(0.0f); vertices.push_back(1.0f);
+    //7
+    vertices.push_back(1.0f); vertices.push_back(1.0f); vertices.push_back(1.0f);
+    vertices.push_back(0.9f); vertices.push_back(0.3f); vertices.push_back(0.8f);
+    vertices.push_back(0.0f); vertices.push_back(0.0f); vertices.push_back(1.0f);
+
     
 	vector<unsigned int> indices;
+
+    indices.push_back(0);
+    indices.push_back(1);
+    indices.push_back(3);
+    indices.push_back(2);
+
+    indices.push_back(4);
+    indices.push_back(5);
+    indices.push_back(7);
+    indices.push_back(6);
+
+    indices.push_back(8);
+    indices.push_back(9);
+    indices.push_back(11);
+    indices.push_back(10);
+
+    indices.push_back(12);
+    indices.push_back(13);
+    indices.push_back(15);
+    indices.push_back(14);
+
+    indices.push_back(16);
+    indices.push_back(17);
+    indices.push_back(19);
+    indices.push_back(18);
+
+    indices.push_back(20);
+    indices.push_back(21);
+    indices.push_back(23);
+    indices.push_back(24);
+    /*
     for (int i = 0; i < 2; i++)
     {
 		// 'i' will either be 0 or 1
@@ -418,7 +488,7 @@ int main(int argc, char **argv)
         indices.push_back(i + 2);
         indices.push_back(i + 6);
         indices.push_back(i + 4);
-    }
+    */
     /*
     vector< float > verticesCubeOBJ;
     vec3 colorCube = vec3(0.9,0.3,0.8);
@@ -427,7 +497,7 @@ int main(int argc, char **argv)
     vector< unsigned int > indicesCubeOBJ;
     bool res = loadOBJ("cubo.obj", verticesCubeOBJ, uvsCube, normalsCube, indicesCubeOBJ);
     */
-    square = new Shape(vertices, indices);
+    square = new Shape(vertices , indices );
     //square2 = new Shape(vertices2, indices);
     /*
     vector< vec3 > verticesOBJ;
@@ -593,18 +663,14 @@ int main(int argc, char **argv)
         
 
 		// Draw using the worldMatrixUniform
-        
-
-        vec3 color2 = vec3(0.28f, 0.95f, 0.93f);
-		//square2->Draw(shaderProgram,GL_QUADS, transformCube.GetMatrix(), worldMatrixUniform,color2);
+        vec3 color = vec3(0.9f, 0.27f, 0.89f);
+        square->Draw(shaderProgram, GL_QUADS, transformCube.GetMatrix(), worldMatrixUniform);
 
         vec3 color3 = vec3(0.75f, 0.34f, 0.96f);
         //cout << &(particles[0].sphere) << endl;
         for (int i = 0; i < particles_num; i++) {
             (particlesShapes[i])->Draw(shaderProgram, GL_TRIANGLES, (particlesTransforms[i]).GetMatrix(), worldMatrixUniform);
         }
-        vec3 color = vec3(0.9f, 0.27f, 0.89f);
-        square->Draw(shaderProgram, GL_QUADS, transformCube.GetMatrix(), worldMatrixUniform);
         
         /*
         Aquí se llama el kernel
