@@ -26,10 +26,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #version 400 core
 
 //in vec3 newColor;
-uniform vec3 fragColor;
+//in vec3 fragColor;
 
 out vec4 outColor;
 void main()
 {
-    outColor = vec4(fragColor, 1.0f);
+    outColor = vec4(0.2f,0.2f,0.6f, 1.0f);
 }

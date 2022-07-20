@@ -27,8 +27,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 // vertex position attribute
-layout(location = 0) in vec3 in_position; 
+layout(location = 0) in vec3 in_position;
+//layout(location = 1) in vec3 color;
 
+out vec3 fragColor;
 // uniform variables
 uniform mat4 worldMatrix; 
 uniform mat4 cameraView; 
@@ -43,4 +45,5 @@ void main(void)
     
 	// output the transformed vector as a vec4.
 	gl_Position = viewPosition;
+    //fragColor = color;
 }

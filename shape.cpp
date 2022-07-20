@@ -24,7 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "shape.h"
 
-Shape::Shape(std::vector<glm::vec3> vertices, std::vector<unsigned int> indices)
+Shape::Shape(std::vector<float> vertices, std::vector<unsigned int> indices)
 {
 	m_vertices = vertices;
 	m_indices = indices;
@@ -33,7 +33,7 @@ Shape::Shape(std::vector<glm::vec3> vertices, std::vector<unsigned int> indices)
 	// Set up vertex buffer
 	glGenBuffers(1, &m_vertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// Set up index buffer
@@ -52,13 +52,15 @@ Shape::~Shape()
 
 
 
-void Shape::Draw(GLuint shaderProgram, GLenum mode, glm::mat4 worldMatrix, GLuint uniformLocation, glm::vec3 color)
+void Shape::Draw(GLuint shaderProgram, GLenum mode, glm::mat4 worldMatrix, GLuint uniformLocation)
 {
 	// Previously, we multiplied each vertex one by one, but now we just have to send the world matrix to the gpu.
 	// Bind the vertex buffer and set the Vertex Attribute.
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	//glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 24, (void*)12);
+	//glEnableVertexAttribArray(1);
 
 
 
@@ -68,7 +70,7 @@ void Shape::Draw(GLuint shaderProgram, GLenum mode, glm::mat4 worldMatrix, GLuin
 	// Bind index buffer to GL_ELEMENT_ARRAY_BUFFER, and enable vertex attribute
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffer);
 	glEnableVertexAttribArray(0);
-	glUniform3f(glGetUniformLocation(shaderProgram, "fragColor"), color[0], color[1], color[2]);
+	//glUniform3f(glGetUniformLocation(shaderProgram, "fragColor"), color[0], color[1], color[2]);
 
 	// Draw all indices in the index buffer
 	glDrawElements(mode, m_indices.size(), GL_UNSIGNED_INT, (void*)0);

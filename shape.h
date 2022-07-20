@@ -33,7 +33,7 @@ class Shape {
 
 private:
 	// Vectors of shape information
-	std::vector<glm::vec3> m_vertices;
+	std::vector<float> m_vertices;
 	std::vector<unsigned int> m_indices;
 
 	// Buffered shape info
@@ -43,10 +43,10 @@ private:
 
 public:
 	// Constructor for a shape, takes a vector for vertices and indices
-	Shape(std::vector<glm::vec3> vertices, std::vector<unsigned int> indices);
+	Shape(std::vector<float> vertices, std::vector<unsigned int> indices);
 	// Shape destructor to clean up buffers
 	~Shape();
 
 	// Draws the shape using a given world matrix
-	void Draw(GLuint shaderProgram, GLenum mode, glm::mat4 worldMatrix, GLuint uniformLocation, glm::vec3 color);
+	void Draw(GLuint shaderProgram, GLenum mode, glm::mat4 worldMatrix, GLuint uniformLocation);
 };
