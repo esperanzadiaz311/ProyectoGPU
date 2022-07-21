@@ -85,37 +85,18 @@
     <CudaCompile Include="kernel.cu" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ColorFragmentShader.fragmentshader" />
     <None Include="fragment.glsl" />
     <None Include="vertex.glsl" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="common\controls.cpp" />
-    <ClCompile Include="common\objloader.cpp" />
-    <ClCompile Include="common\quaternion_utils.cpp" />
-    <ClCompile Include="common\shader.cpp" />
-    <ClCompile Include="common\tangentspace.cpp" />
-    <ClCompile Include="common\text2D.cpp" />
-    <ClCompile Include="common\texture.cpp" />
-    <ClCompile Include="common\vboindexer.cpp" />
-    <ClCompile Include="shader.cpp" />
     <ClCompile Include="shader2.cpp" />
     <ClCompile Include="shape.cpp" />
-    <ClCompile Include="transform3d.cpp" />
+    <ClCompile Include="transformations.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="common\controls.hpp" />
-    <ClInclude Include="common\objloader.hpp" />
-    <ClInclude Include="common\quaternion_utils.hpp" />
-    <ClInclude Include="common\shader.hpp" />
-    <ClInclude Include="common\tangentspace.hpp" />
-    <ClInclude Include="common\text2D.hpp" />
-    <ClInclude Include="common\texture.hpp" />
-    <ClInclude Include="common\vboindexer.hpp" />
-    <ClInclude Include="shader.hpp" />
     <ClInclude Include="shader2.h" />
     <ClInclude Include="shape.h" />
-    <ClInclude Include="transform3d.h" />
+    <ClInclude Include="transformations.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

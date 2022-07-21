@@ -1,1 +1,2 @@
 C:\GLP\CudaProject\x64\Debug\CudaProject.exe
+D:\Documentos\Material U\Noveno Semestre\GPU\ProyectoGPU\x64\Debug\CudaProject.exe
