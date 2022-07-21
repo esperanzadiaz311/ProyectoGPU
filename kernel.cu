@@ -65,8 +65,8 @@ __global__ void kernel_particula(int particles_num, vec3* particlesPositions, ve
     }
 }
 
-int particles_num = 500;
-const float gravity = -10.0f;
+int particles_num = 100;
+const float gravity = -9.8f;
 const float radio = 0.07f;
 const float coeficienteRoce = 0.8f;
     
@@ -232,7 +232,7 @@ void genParticle() {
     vector< float > vertices;
     vector< unsigned int > indicesOBJ;
     bool res = loadOBJ("esfera.obj", vertices, indicesOBJ,randomVec3(0,1));
-    particlesPosition.push_back(vec3(0.5f,0.5f,1.0f));
+    particlesPosition.push_back(vec3(0.0f,0.0f,1.0f));
     particlesVelocity.push_back(vec3(0,0,0));
     cout << "new Particule" << endl;
     Shape* sphere = new Shape(vertices, indicesOBJ, randomVec3(0, 1));
@@ -245,7 +245,7 @@ void genBigParticle() {
     vector< float > vertices;
     vector< unsigned int > indicesOBJ;
     bool res = loadOBJ("esfera2.obj", vertices, indicesOBJ, randomVec3(0, 1));
-    particlesPosition.push_back(vec3(0.5f, 0.5f, 1.0f));
+    particlesPosition.push_back(vec3(0.0f, 0.0f, 1.0f));
     particlesVelocity.push_back(vec3(0, 0, 0));
     cout << "new Particule" << endl;
     Shape* sphere = new Shape(vertices, indicesOBJ, randomVec3(0, 1));
@@ -637,27 +637,25 @@ int main(int argc, char **argv)
         }
         
         for (int i = 0; i < particles_num; i++) {
-            
             vec3 pos = particlesPosition[i];
-
-            if (abs(pos[0]) + radio > 1.0f) {
-                particlesVelocity[i][0] = -particlesVelocity[i][0];
-                pos[0] = (pos[0] / abs(pos[0]) * (1 - radio));
-            }
-            if (abs(pos[1]) + radio > 1.0f) {
-                particlesVelocity[i][1] = -particlesVelocity[i][1];
-                pos[1] = (pos[1] / abs(pos[1]) * (1 - radio)); 
-                if (pos[1] > 0) {
-                }
-            }
-            if (abs(pos[2]) + radio > 1.0f) {
-                particlesVelocity[i][2] = -particlesVelocity[i][2];
-                pos[2] = (pos[2] / abs(pos[2]) * (1 - radio));
-                
-
-            }
             vec3 newPos = calculateNewPos(pos, particlesVelocity[i], dt, gravity);
             particlesPosition[i] = newPos;
+
+            if (abs(particlesPosition[i][0])> 1.0f) {
+                particlesVelocity[i][0] = -particlesVelocity[i][0];
+                particlesPosition[i][0] = (particlesPosition[i][0] / abs(particlesPosition[i][0])) *(1 - radio);
+            }
+            if (abs(particlesPosition[i][1]) > 1.0f) {
+                particlesVelocity[i][1] = -particlesVelocity[i][1];
+                particlesPosition[i][1] = (particlesPosition[i][1] / abs(particlesPosition[i][1])) * (1 - radio); 
+
+            }
+            if (abs(particlesPosition[i][2]) > 1.0f) {
+                particlesVelocity[i][2] = -particlesVelocity[i][2];
+                particlesPosition[i][2] = (particlesPosition[i][2] / abs(particlesPosition[i][2])) * (1 - radio);
+
+            }
+            
             //cout << i << ' ' << particlesPosition[i][0] << ',' << particlesPosition[i][1] << ',' << particlesPosition[i][2] << endl;
 
         }
