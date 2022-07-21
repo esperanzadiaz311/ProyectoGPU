@@ -76,8 +76,8 @@ __global__ void kernel_particula(int particles_num, vec3* particlesPositions, ve
     }
 }
 
-int particles_num = 100;
-const float gravity = -20.8f;
+int particles_num = 300;
+const float gravity = -10.0f;
 const float radio = 0.07f;
 const float coeficienteRoce = 0.8f;
     
@@ -177,8 +177,8 @@ vec3 randomVec3(float vmin,float vmax) {
 vec3 calculateNewPos(vec3 pos0,vec3 vel0, float dt, float a) {
     vec3 newVel = vec3(0.0f, 0.0f, 0.0f);
     newVel[0] = vel0[0] * (1 - coeficienteRoce *dt);
-    newVel[1] = (vel0[1] + (a * dt)) * (1 - coeficienteRoce * dt);
-    newVel[2] = vel0[2] * (1 - coeficienteRoce * dt);
+    newVel[2] = (vel0[2] + (a * dt)) * (1 - coeficienteRoce * dt);
+    newVel[1] = vel0[1] * (1 - coeficienteRoce * dt);
      //sqrt(pow(vel0, vec3(2, 2, 2)) + aceleracion);
     /*
     float newX = pos0[0] + vel0[0] * dt;
@@ -277,27 +277,33 @@ void particleInit(){
         //particlesColor.push_back(randomVec3(0.0f,1.0f));        
     }
 }
-/*
+
 void genParticle() {
-    vector< vec3 > verticesOBJ;
-    vector< vec3 > colors;
-    vector< vec2 > uvs;
-    vector< vec3 > normals; // Won't be used at the moment.
+    vector< float > vertices;
     vector< unsigned int > indicesOBJ;
-    bool res = loadOBJ("esfera.obj", verticesOBJ, uvs, normals, indicesOBJ);
-    particlesPosition.push_back(vec3(0.5f,0.8f,0.5f));
+    bool res = loadOBJ("esfera.obj", vertices, indicesOBJ,randomVec3(0,1));
+    particlesPosition.push_back(vec3(0.5f,0.5f,1.0f));
     particlesVelocity.push_back(vec3(0,0,0));
-    Transform3D transform;
-    particlesTransforms.push_back(transform);
-    particlesTransforms[size(particlesTransforms)-1].SetPosition(particlesPosition[size(particlesPosition) - 1]);
-    cout << size(particlesTransforms) - 1 << ' ' << particlesTransforms[size(particlesTransforms) - 1].Position()[0] << ',' << particlesTransforms[size(particlesTransforms) - 1].Position()[1] << ',' << particlesTransforms[size(particlesTransforms) - 1].Position()[2] << endl;
-    //particlesTransforms[i].Translate(vec3(0, 0, -5));
-    Shape* sphere = new Shape(verticesOBJ, indicesOBJ);
+    cout << "new Particule" << endl;
+    Shape* sphere = new Shape(vertices, indicesOBJ, randomVec3(0, 1));
     particlesShapes.push_back(sphere);
     particlesColor.push_back(randomVec3(0.0f, 1.0f));
     particles_num++;
 }
-*/
+
+void genBigParticle() {
+    vector< float > vertices;
+    vector< unsigned int > indicesOBJ;
+    bool res = loadOBJ("esfera2.obj", vertices, indicesOBJ, randomVec3(0, 1));
+    particlesPosition.push_back(vec3(0.5f, 0.5f, 1.0f));
+    particlesVelocity.push_back(vec3(0, 0, 0));
+    cout << "new Particule" << endl;
+    Shape* sphere = new Shape(vertices, indicesOBJ, randomVec3(0, 1));
+    particlesShapes.push_back(sphere);
+    particlesColor.push_back(randomVec3(0.0f, 1.0f));
+    particles_num++;
+}
+
 
 int main(int argc, char **argv)
 {
@@ -555,13 +561,23 @@ int main(int argc, char **argv)
         // Here we get some input, and use it to move the camera
         if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
             //cameraPosition.Translate(cameraPosition.GetForward() * 5.0f * dt);
+            camera_theta -= dt;
         }
         //if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
             //transformCube.RotateY(-1.0f * dt);
             //transformParticle1.SetPosition(calculatePosition(transformParticle1.Position(), -0.5f * dt));
         //}
         if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+            camera_theta += dt;
            // cameraPosition.Translate(cameraPosition.GetForward() * -5.0f * dt);
+        }
+        if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS) {
+            genParticle();
+            // cameraPosition.Translate(cameraPosition.GetForward() * -5.0f * dt);
+        }
+        if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) {
+            genBigParticle();
+            // cameraPosition.Translate(cameraPosition.GetForward() * -5.0f * dt);
         }
 
         /*if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
@@ -578,11 +594,15 @@ int main(int argc, char **argv)
         // When using a camera, we do the exact opposite. We move everything else from world space into camera local space.
         // To do this we make a matrix that does the inverse of what a world matrix does.
 
+        float R = 2.5;
 
-        vec3 viewPos = vec3(0, 2.5, 0);
+        ;
         vec3 up = vec3(0, 0, 1);
         vec3 at = vec3(0, 0, 0);
+        float camX = R * glm::cos(camera_theta);
+        float camY = R * glm::sin(camera_theta);
 
+        vec3 viewPos = vec3(camX, camY, 0);
         mat4 view = lookAt(viewPos, at, up);
         float aspect = viewportDimensions.x / viewportDimensions.y;
         mat4 projection = perspective(45.0, aspect, 0.1, 100.0);
@@ -743,20 +763,20 @@ int main(int argc, char **argv)
             vec3 pos = particlesPosition[i];
 
             //particlesTransforms[i].Translate(vec3(0, 0, -5));
-            if (abs(pos[0]) + radio > 2.0f) {
+            if (abs(pos[0]) + radio > 1.0f) {
                 particlesVelocity[i][0] = -particlesVelocity[i][0];
-                pos[0] = (pos[0] / abs(pos[0]) * (1 - radio))*2;
+                pos[0] = (pos[0] / abs(pos[0]) * (1 - radio));
             }
-            if (abs(pos[1]) + radio > 2.0f) {
+            if (abs(pos[1]) + radio > 1.0f) {
                 particlesVelocity[i][1] = -particlesVelocity[i][1];
-                pos[1] = (pos[1] / abs(pos[1]) * (1 - radio))*2; 
+                pos[1] = (pos[1] / abs(pos[1]) * (1 - radio)); 
                 if (pos[1] > 0) {
                     //cout << pos[1] << endl;
                 }
             }
-            if (abs(pos[2]) + radio > 2.0f) {
+            if (abs(pos[2]) + radio > 1.0f) {
                 particlesVelocity[i][2] = -particlesVelocity[i][2];
-                pos[2] = (pos[2] / abs(pos[2]) * (1 - radio))*2;
+                pos[2] = (pos[2] / abs(pos[2]) * (1 - radio));
                 
 
             }
