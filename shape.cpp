@@ -73,7 +73,20 @@ void Shape::Draw(GLuint shaderProgram, GLenum mode, glm::mat4 worldMatrix, GLuin
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffer);
 	glEnableVertexAttribArray(0);
 	//glUniform3f(glGetUniformLocation(shaderProgram, "fragColor"), color[0], color[1], color[2]);
+	glUniform3f(glGetUniformLocation(shaderProgram, "La"), 0.56f, 0.91f, 0.89f);
+	glUniform3f(glGetUniformLocation(shaderProgram, "Ld"), 1.0f, 1.0f, 1.0f);
+	glUniform3f(glGetUniformLocation(shaderProgram, "Ls"), 0.12f, 0.58f, 0.31f);
 
+	glUniform3f(glGetUniformLocation(shaderProgram, "Ka"), 1.0f, 1.0f, 1.0f);
+	glUniform3f(glGetUniformLocation(shaderProgram, "Kd"), 1.0f, 1.0f, 1.0f);
+	glUniform3f(glGetUniformLocation(shaderProgram, "Ks"), 1.0f, 1.0f, 1.0f);
+
+	glUniform3f(glGetUniformLocation(shaderProgram, "lightPosition"), 0.0f, 8.0f, 0.0f);
+	//glUniform3f(glGetUniformLocation(shaderProgram, "viewPosition"), viewPos[0], viewPos[1], viewPos[2])
+	glUniform1ui(glGetUniformLocation(shaderProgram, "shininess"), 5);
+	glUniform1f(glGetUniformLocation(shaderProgram, "constantAttenuation"), 0.001f);;
+	glUniform1f(glGetUniformLocation(shaderProgram, "linearAttenuation"), 0.1f);
+	glUniform1f(glGetUniformLocation(shaderProgram, "quadraticAttenuation"), 0.01f);
 	// Draw all indices in the index buffer
 	glDrawElements(mode, m_indices.size(), GL_UNSIGNED_INT, (void*)0);
 

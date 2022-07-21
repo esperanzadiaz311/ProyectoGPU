@@ -32,6 +32,8 @@ layout(location = 1) in vec3 color;
 layout(location = 2) in vec3 normal;
 
 out vec3 fragColor;
+out vec3 fragPosition;
+out vec3 fragNormal;
 // uniform variables
 uniform mat4 worldMatrix; 
 uniform mat4 cameraView; 
@@ -46,5 +48,6 @@ void main(void)
     
 	// output the transformed vector as a vec4.
 	gl_Position = viewPosition;
+    fragNormal = mat3(transpose(inverse(worldMatrix))) * normal;
     fragColor = color;
 }

@@ -33,39 +33,38 @@ __global__ void kernel_particula(int particles_num, vec3* particlesPositions, ve
         vec3 posI = particlesPositions[i];
         vec3 velActual = particlesVelocities[particleIndex];
         vec3 velI = particlesVelocities[i];
-        if(i != particleIndex){
-           
-            double distance = sqrt(pow(posActual[0] - posI[0], 2.0) + pow(posActual[1] -  posI[1], 2.0) + pow(posActual[2] - posI[2], 2.0));
-            if (distance <= radio * 2.0f) {
-                collision = true;
-                vec3 normal = posI - posActual;
-                /*
-                normal[0] = posI[0] - posActual[0];
-                normal[1] = posI[1] - posActual[1];
-                normal[2] = posI[2] - posActual[2];
-                */
-                normal = normalize(normal);
-                /*
-                float modulo = sqrt(pow(normal[0], 2) + pow(normal[1], 2) + pow(normal[2], 2));
-                normal[0] = normal[0] / modulo;
-                normal[1] = normal[1] / modulo;
-                normal[2] = normal[2] / modulo;
-                */
+        if (i == particleIndex) {
+            continue;
+        }
+        double distance = sqrt(pow(posActual[0] - posI[0], 2.0) + pow(posActual[1] -  posI[1], 2.0) + pow(posActual[2] - posI[2], 2.0));
+        if (distance <= radio * 2.0f) {
+            collision = true;
+            vec3 normal = posI - posActual;
+            /*
+            normal[0] = posI[0] - posActual[0];
+            normal[1] = posI[1] - posActual[1];
+            normal[2] = posI[2] - posActual[2];
+            */
+            //normal = normalize(normal);
 
-                vec3 relativeVel = velI - velActual;
-                /*
-                relativeVel[0] = velI[0] - velActual[0];
-                relativeVel[1] = velI[1] - velActual[1];
-                relativeVel[2] = velI[2] - velActual[2];
-                */
-                float prod_punto = dot(normal, relativeVel);//normal[0] * relativeVel[0] + normal[1] * relativeVel[1] + normal[2] * relativeVel[2];
-                normal *= prod_punto;
-                vec3 normalVelocity = normal;//vec3(normal[0] * prod_punto, normal[1] * prod_punto, normal[2] * prod_punto);
-                vec3 velocityRes = velActual + normalVelocity;//vec3(velActual[0] + normalVelocity[0], velActual[1] + normalVelocity[1], velActual[2] + normalVelocity[2]);
-                particlesNewVelocities[particleIndex] = velocityRes;
+            float modulo = sqrt(pow(normal[0], 2) + pow(normal[1], 2) + pow(normal[2], 2));
+            normal[0] = normal[0] / modulo;
+            normal[1] = normal[1] / modulo;
+            normal[2] = normal[2] / modulo;
 
-                break;
-            }
+            vec3 relativeVel = velI - velActual;
+            /*
+            relativeVel[0] = velI[0] - velActual[0];
+            relativeVel[1] = velI[1] - velActual[1];
+            relativeVel[2] = velI[2] - velActual[2];
+            */
+            float prod_punto = normal[0] * relativeVel[0] + normal[1] * relativeVel[1] + normal[2] * relativeVel[2];
+            //normal *= prod_punto;
+            vec3 normalVelocity = vec3(normal[0] * prod_punto, normal[1] * prod_punto, normal[2] * prod_punto);
+            vec3 velocityRes = velActual + normalVelocity;//vec3(velActual[0] + normalVelocity[0], velActual[1] + normalVelocity[1], velActual[2] + normalVelocity[2]);
+            particlesNewVelocities[particleIndex] = velocityRes;
+
+            break;
         }
         if(!collision){
             particlesNewVelocities[particleIndex] = velActual;
@@ -76,7 +75,7 @@ __global__ void kernel_particula(int particles_num, vec3* particlesPositions, ve
 }
 
 int particles_num = 100;
-const float gravity = -20.8f;
+const float gravity = -9.8f;
 const float radio = 0.1f;
 const float coeficienteRoce = 0.8f;
     
@@ -188,8 +187,11 @@ vec3 calculateNewPos(vec3 pos0,vec3 vel0, float dt, float a) {
     float newY = pos0[1] + vel0[1] * dt + 0.5*a*pow(dt,2.0);
     float newZ = pos0[2] + vel0[2] * dt;
     */
-    newVel *= dt;
-    vec3 newPos = pos0 + newVel;
+    //newVel *= dt;
+    vec3 newPos = vec3(0.0f, 0.0f, 0.0f);
+    newPos[0] = pos0[0] + newVel[0];
+    newPos[1] = pos0[1] + newVel[1];
+    newPos[2] = pos0[2] + newVel[2];
     return newPos;
 }
 
