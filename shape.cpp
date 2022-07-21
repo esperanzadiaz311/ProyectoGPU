@@ -24,16 +24,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "shape.h"
 
-Shape::Shape(std::vector<glm::vec3> vertices, std::vector<unsigned int> indices)
+Shape::Shape(std::vector<float> vertices, std::vector<unsigned int> indices, glm::vec3 color)
 {
 	m_vertices = vertices;
 	m_indices = indices;
+	m_color = color;
 	// Create the shape by setting up buffers
 
 	// Set up vertex buffer
 	glGenBuffers(1, &m_vertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// Set up index buffer
@@ -41,6 +42,7 @@ Shape::Shape(std::vector<glm::vec3> vertices, std::vector<unsigned int> indices)
 	glBindBuffer(GL_ARRAY_BUFFER, m_indexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 }
 
 Shape::~Shape()
@@ -52,23 +54,22 @@ Shape::~Shape()
 
 
 
-void Shape::Draw(GLuint shaderProgram, GLenum mode, glm::mat4 worldMatrix, GLuint uniformLocation, glm::vec3 color)
+void Shape::Draw(GLuint shaderProgram, GLenum mode, glm::vec3 viewPos, glm::mat4 projection, glm::mat4 view, glm::mat4 model)
 {
 	// Previously, we multiplied each vertex one by one, but now we just have to send the world matrix to the gpu.
 	// Bind the vertex buffer and set the Vertex Attribute.
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-
-
-	// Set the world matrix uniform
-	glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, &(worldMatrix[0][0]));
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 36, (void*)0);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 36, (void*)12);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 36, (void*)24);
+	glEnableVertexAttribArray(2);
 
 	// Bind index buffer to GL_ELEMENT_ARRAY_BUFFER, and enable vertex attribute
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffer);
 	glEnableVertexAttribArray(0);
-	glUniform3f(glGetUniformLocation(shaderProgram, "fragColor"), color[0], color[1], color[2]);
+	glUniform3f(glGetUniformLocation(shaderProgram, "fragColor"), m_color[0], m_color[1], m_color[2]);
 
 	// Draw all indices in the index buffer
 	glDrawElements(mode, m_indices.size(), GL_UNSIGNED_INT, (void*)0);
