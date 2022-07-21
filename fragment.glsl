@@ -23,14 +23,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 
-#version 400 core
+#version 330 core
 
 //in vec3 newColor;
-in vec3 fragColor;
+//in vec3 fragColor;
 in vec3 fragPosition;
 in vec3 fragNormal;
 
 uniform vec3 lightPosition;
+uniform vec3 fragColor;
 uniform vec3 viewPosition;
 uniform vec3 La;
 uniform vec3 Ld;
@@ -57,7 +58,7 @@ void main()
     vec3 diffuse = Kd * Ld * diff;
 
     // specular
-    vec3 viewDir = normalize(fragPosition);
+    vec3 viewDir = normalize(viewPosition - fragPosition);
     vec3 reflectDir = reflect(-lightDir, normalizedNormal);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
     vec3 specular = Ks * Ls * spec;

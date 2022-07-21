@@ -23,31 +23,29 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 
-#version 400 core
+#version 330 core
 
 
 // vertex position attribute
-layout(location = 0) in vec3 in_position;
+layout(location = 0) in vec3 position;
 layout(location = 1) in vec3 color;
 layout(location = 2) in vec3 normal;
 
-out vec3 fragColor;
+//out vec3 fragColor;
 out vec3 fragPosition;
 out vec3 fragNormal;
 // uniform variables
-uniform mat4 worldMatrix; 
-uniform mat4 cameraView; 
 
-void main(void) 
-{ 
-	// Multiply the position by the world matrix to convert from local to world space.
-    vec4 worldPosition = worldMatrix * vec4(in_position, 1); 
-    
-    // Now, we multiply by the view matrix to get everything in view space.
-    vec4 viewPosition = cameraView * worldPosition; 
-    
-	// output the transformed vector as a vec4.
-	gl_Position = viewPosition;
-    fragNormal = mat3(transpose(inverse(worldMatrix))) * normal;
-    fragColor = color;
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+uniform mat4 transform;
+
+void main()
+{
+    fragPosition = vec3(model * vec4(position, 1.0));
+    //fragColor = color;
+    fragNormal = mat3(transpose(inverse(model))) * normal;
+
+    gl_Position = projection * view * transform * vec4(fragPosition, 1.0);
 }

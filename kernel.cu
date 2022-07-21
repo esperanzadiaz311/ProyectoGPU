@@ -9,11 +9,12 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 #include <cmath>
-//#include <shader.hpp>
+#define _USE_MATH_DEFINES
+#include <math.h>
 #include "glm/gtc/matrix_transform.hpp"
 #include <vector>
 #include "shape.h"
-#include "transform3d.h"
+#include "transformations.h"
 #include "shader2.h"
 #include<time.h>
 
@@ -38,6 +39,7 @@ __global__ void kernel_particula(int particles_num, vec3* particlesPositions, ve
         }
         double distance = sqrt(pow(posActual[0] - posI[0], 2.0) + pow(posActual[1] -  posI[1], 2.0) + pow(posActual[2] - posI[2], 2.0));
         if (distance <= radio * 2.0f) {
+            //printf("choque %d con %d, a %f/n", particleIndex, i, distance);
             collision = true;
             vec3 normal = posI - posActual;
             /*
@@ -75,8 +77,8 @@ __global__ void kernel_particula(int particles_num, vec3* particlesPositions, ve
 }
 
 int particles_num = 100;
-const float gravity = -9.8f;
-const float radio = 0.1f;
+const float gravity = -20.8f;
+const float radio = 0.07f;
 const float coeficienteRoce = 0.8f;
     
 /*
@@ -86,9 +88,8 @@ const float coeficienteRoce = 0.8f;
 bool loadOBJ(
     const char* path,
     vector < float >& out_vertices,
-    vector < vec2 >& out_uvs,
-    vector < vec3 >& out_normals,
-    vector < unsigned int >& out_indexs
+    vector < unsigned int >& out_indexs,
+    vec3 color
 ){
     vector< unsigned int > vertexIndices, uvIndices, normalIndices;
     vector< vec3 > temp_vertices;
@@ -139,9 +140,6 @@ bool loadOBJ(
             out_indexs.push_back(index);
             out_indexs.push_back(index+1);
             out_indexs.push_back(index+2);
-            uvIndices.push_back(uvIndex[0]);
-            uvIndices.push_back(uvIndex[1]);
-            uvIndices.push_back(uvIndex[2]);
             normalIndices.push_back(normalIndex[0]);
             normalIndices.push_back(normalIndex[1]);
             normalIndices.push_back(normalIndex[2]);
@@ -157,9 +155,9 @@ bool loadOBJ(
         out_vertices.push_back(vertex[0]);
         out_vertices.push_back(vertex[1]);
         out_vertices.push_back(vertex[2]);
-        out_vertices.push_back(0.9);
-        out_vertices.push_back(0.3);
-        out_vertices.push_back(0.5);
+        out_vertices.push_back(color[0]);
+        out_vertices.push_back(color[1]);
+        out_vertices.push_back(color[2]);
         out_vertices.push_back(normal[0]);
         out_vertices.push_back(normal[1]);
         out_vertices.push_back(normal[2]);
@@ -189,28 +187,30 @@ vec3 calculateNewPos(vec3 pos0,vec3 vel0, float dt, float a) {
     */
     //newVel *= dt;
     vec3 newPos = vec3(0.0f, 0.0f, 0.0f);
-    newPos[0] = pos0[0] + newVel[0];
-    newPos[1] = pos0[1] + newVel[1];
-    newPos[2] = pos0[2] + newVel[2];
+    newPos[0] = pos0[0] + newVel[0]*dt;
+    newPos[1] = pos0[1] + newVel[1]*dt;
+    newPos[2] = pos0[2] + newVel[2]*dt;
     return newPos;
 }
 
-vec3 calculateTranslate(vec3 vel0, float dt) {
-    float newX = vel0[0] * dt;
-    float newY = vel0[1] * dt;
-    float newZ = vel0[2] * dt;
-    vec3 newPos = vec3(newX,newY,newZ);
-    return newPos;
+vec3 calculateTranslate(vec3 vel0, float dt, float a) {
+
+    vec3 newVel = vec3(0.0f, 0.0f, 0.0f);
+    newVel[0] = (vel0[0] * (1 - coeficienteRoce * dt))*dt;
+    newVel[1] = ((vel0[1] + (a * dt)) * (1 - coeficienteRoce * dt))*dt;
+    newVel[2] = (vel0[2] * (1 - coeficienteRoce * dt))*dt;
+    //vec3 newPos = vec3(newX,newY,newZ);
+    return newVel;
 }
 
 GLFWwindow* window;
 
 Shape* square;
-Shape* sphere;
+Shape* sphere1;
+Shape* sphere2;
 
 // The transform being used to draw our shape
-Transform3D transformCube;
-Transform3D transformParticle1;
+
 
 // These shader objects wrap the functionality of loading and compiling shaders from files.
 Shader vertexShader;
@@ -226,13 +226,13 @@ GLuint worldMatrixUniform;
 GLuint cameraMatrixUniform;
 
 // Here we store the position, of the camera.
-Transform3D cameraPosition;
+
 
 // Store the current dimensions of the viewport.
 vec2 viewportDimensions = vec2(800, 600);
 
 // Store the current mouse position.
-vec2 mousePosition;
+//vec2 mousePosition;
 
 // Window resize callback
 void resizeCallback(GLFWwindow* window, int width, int height){
@@ -241,10 +241,12 @@ void resizeCallback(GLFWwindow* window, int width, int height){
 }
 
 // This will get called when the mouse moves.
+/*
 void mouseMoveCallback(GLFWwindow *window, GLdouble mouseX, GLdouble mouseY)
 {
     mousePosition = vec2(mouseX, mouseY);
 }
+*/
 
 /*
     Particles Elements
@@ -255,27 +257,24 @@ vector<vec3> particlesPosition;
 vector<vec3> particlesVelocity;
 vector<vec3> particlesColor;
 vector<Shape*> particlesShapes;
-vector<Transform3D> particlesTransforms;
 
 void particleInit(){
     srand(time(NULL));
+    //vector< float > verticesOBJ;
+    
+    //bool res = loadOBJ("esfera.obj", verticesOBJ, uvs, normals, indicesOBJ);
     vector< float > verticesOBJ;
-    vector< vec3 > colors;
-    vector< vec2 > uvs;
-    vector< vec3 > normals; // Won't be used at the moment.
     vector< unsigned int > indicesOBJ;
-    bool res = loadOBJ("esfera.obj", verticesOBJ, uvs, normals, indicesOBJ);
+    bool res = loadOBJ("esfera.obj", verticesOBJ, indicesOBJ, randomVec3(0.0f, 1.0f));
     for (int i=0;i<particles_num;i++){
+        
         particlesPosition.push_back(randomVec3(-1.0f,1.0f));
         particlesVelocity.push_back(randomVec3(-0.5f,0.5f));
-        Transform3D transform;
-        particlesTransforms.push_back(transform);
-        particlesTransforms[i].SetPosition(particlesPosition[i]);
-        cout << i << ' ' << particlesTransforms[i].Position()[0] << ',' << particlesTransforms[i].Position()[1] << ',' << particlesTransforms[i].Position()[2] << endl;
+        cout << i << ' ' << particlesPosition[i][0] << ',' << particlesPosition[i][1] << ',' << particlesPosition[i][2] << endl;
         //particlesTransforms[i].Translate(vec3(0, 0, -5));
-        Shape* sphere = new Shape(verticesOBJ, indicesOBJ);
+        Shape* sphere = new Shape(verticesOBJ, indicesOBJ, randomVec3(0.0f, 1.0f));
         particlesShapes.push_back(sphere);
-        particlesColor.push_back(randomVec3(0.0f,1.0f));        
+        //particlesColor.push_back(randomVec3(0.0f,1.0f));        
     }
 }
 /*
@@ -313,7 +312,7 @@ int main(int argc, char **argv)
 	//set resize callback
 	glfwSetFramebufferSizeCallback(window, resizeCallback);
 
-    glfwSetCursorPosCallback(window, mouseMoveCallback);
+    //glfwSetCursorPosCallback(window, mouseMoveCallback);
 
 	// Initializes the glew library
 	glewInit();
@@ -332,108 +331,108 @@ int main(int argc, char **argv)
     //-X
     //0
     vertices.push_back(-1.0f);vertices.push_back(-1.0f); vertices.push_back(-1.0f);
-    vertices.push_back(0.9f); vertices.push_back(0.3f);vertices.push_back(0.8f);
+    vertices.push_back(1.0f); vertices.push_back(1.0f);vertices.push_back(1.0f);
     vertices.push_back(-1.0f); vertices.push_back(0.0f); vertices.push_back(0.0f);
     //1
     vertices.push_back(-1.0f);vertices.push_back(-1.0f);vertices.push_back(1.0f);
-    vertices.push_back(0.9f);vertices.push_back(0.3f);vertices.push_back(0.8f);
+    vertices.push_back(1.0f); vertices.push_back(1.0f); vertices.push_back(1.0f);
     vertices.push_back(-1.0f); vertices.push_back(0.0f); vertices.push_back(0.0f);
     //2
     vertices.push_back(-1.0f);vertices.push_back(1.0f); vertices.push_back(-1.0f);
-    vertices.push_back(0.9f); vertices.push_back(0.3f);vertices.push_back(0.8f);
+    vertices.push_back(1.0f); vertices.push_back(1.0f);vertices.push_back(1.0f);
     vertices.push_back(-1.0f); vertices.push_back(0.0f); vertices.push_back(0.0f);
     //3
     vertices.push_back(-1.0f);vertices.push_back(1.0f); vertices.push_back(1.0f);
-    vertices.push_back(0.9f);vertices.push_back(0.3f);vertices.push_back(0.8f);
+    vertices.push_back(1.0f); vertices.push_back(1.0f); vertices.push_back(1.0f);
     vertices.push_back(-1.0f); vertices.push_back(0.0f); vertices.push_back(0.0f);
     //+X
     //4
     vertices.push_back(1.0f);vertices.push_back(-1.0f);vertices.push_back(-1.0f);
-    vertices.push_back(0.9f);vertices.push_back(0.3f);vertices.push_back(0.8f);
+    vertices.push_back(1.0f); vertices.push_back(1.0f); vertices.push_back(1.0f);
     vertices.push_back(-1.0f); vertices.push_back(0.0f); vertices.push_back(0.0f);
     //5
     vertices.push_back(1.0f);vertices.push_back(-1.0f);vertices.push_back(1.0f);
-    vertices.push_back(0.9f);vertices.push_back(0.3f); vertices.push_back(0.8f);
+    vertices.push_back(1.0f); vertices.push_back(1.0f);vertices.push_back(1.0f);
     vertices.push_back(1.0f); vertices.push_back(0.0f); vertices.push_back(0.0f);
     //6
     vertices.push_back(1.0f);vertices.push_back(1.0f);vertices.push_back(-1.0f);
-    vertices.push_back(0.9f);vertices.push_back(0.3f);vertices.push_back(0.8f);
+    vertices.push_back(1.0f); vertices.push_back(1.0f); vertices.push_back(1.0f);
     vertices.push_back(1.0f); vertices.push_back(0.0f); vertices.push_back(0.0f);
     //7
     vertices.push_back(1.0f); vertices.push_back(1.0f);vertices.push_back(1.0f);
-    vertices.push_back(0.9f); vertices.push_back(0.3f);vertices.push_back(0.8f);
+    vertices.push_back(1.0f); vertices.push_back(1.0f);vertices.push_back(1.0f);
     vertices.push_back(1.0f); vertices.push_back(0.0f); vertices.push_back(0.0f);
 
     //-Y
     //0
     vertices.push_back(-1.0f); vertices.push_back(-1.0f); vertices.push_back(-1.0f);
-    vertices.push_back(0.9f); vertices.push_back(0.3f); vertices.push_back(0.8f);
+    vertices.push_back(1.0f); vertices.push_back(1.0f); vertices.push_back(1.0f);
     vertices.push_back(0.0f); vertices.push_back(-1.0f); vertices.push_back(0.0f);
     //1
     vertices.push_back(-1.0f); vertices.push_back(-1.0f); vertices.push_back(1.0f);
-    vertices.push_back(0.9f); vertices.push_back(0.3f); vertices.push_back(0.8f);
+    vertices.push_back(1.0f); vertices.push_back(1.0f); vertices.push_back(1.0f);
     vertices.push_back(0.0f); vertices.push_back(-1.0f); vertices.push_back(0.0f);
     //4
     vertices.push_back(1.0f); vertices.push_back(-1.0f); vertices.push_back(-1.0f);
-    vertices.push_back(0.9f); vertices.push_back(0.3f); vertices.push_back(0.8f);
+    vertices.push_back(1.0f); vertices.push_back(1.0f); vertices.push_back(1.0f);
     vertices.push_back(0.0f); vertices.push_back(-1.0f); vertices.push_back(0.0f);
     //5
     vertices.push_back(1.0f); vertices.push_back(-1.0f); vertices.push_back(1.0f);
-    vertices.push_back(0.9f); vertices.push_back(0.3f); vertices.push_back(0.8f);
+    vertices.push_back(1.0f); vertices.push_back(1.0f); vertices.push_back(1.0f);
     vertices.push_back(0.0f); vertices.push_back(-1.0f); vertices.push_back(0.0f);
 
     //+Y
     //2
     vertices.push_back(-1.0f); vertices.push_back(1.0f); vertices.push_back(-1.0f);
-    vertices.push_back(0.9f); vertices.push_back(0.3f); vertices.push_back(0.8f);
+    vertices.push_back(1.0f); vertices.push_back(1.0f); vertices.push_back(1.0f);
     vertices.push_back(0.0f); vertices.push_back(1.0f); vertices.push_back(0.0f);
     //3
     vertices.push_back(-1.0f); vertices.push_back(1.0f); vertices.push_back(1.0f);
-    vertices.push_back(0.9f); vertices.push_back(0.3f); vertices.push_back(0.8f);
+    vertices.push_back(1.0f); vertices.push_back(1.0f); vertices.push_back(1.0f);
     vertices.push_back(0.0f); vertices.push_back(1.0f); vertices.push_back(0.0f);
     //6
     vertices.push_back(1.0f); vertices.push_back(1.0f); vertices.push_back(-1.0f);
-    vertices.push_back(0.9f); vertices.push_back(0.3f); vertices.push_back(0.8f);
+    vertices.push_back(1.0f); vertices.push_back(1.0f); vertices.push_back(1.0f);
     vertices.push_back(0.0f); vertices.push_back(1.0f); vertices.push_back(0.0f);
     //7
     vertices.push_back(1.0f); vertices.push_back(1.0f); vertices.push_back(1.0f);
-    vertices.push_back(0.9f); vertices.push_back(0.3f); vertices.push_back(0.8f);
+    vertices.push_back(1.0f); vertices.push_back(1.0f); vertices.push_back(1.0f);
     vertices.push_back(0.0f); vertices.push_back(1.0f); vertices.push_back(0.0f);
 
     //-Z
     //0
     vertices.push_back(-1.0f); vertices.push_back(-1.0f); vertices.push_back(-1.0f);
-    vertices.push_back(0.9f); vertices.push_back(0.3f); vertices.push_back(0.8f);
+    vertices.push_back(1.0f); vertices.push_back(1.0f); vertices.push_back(1.0f);
     vertices.push_back(0.0f); vertices.push_back(0.0f); vertices.push_back(-1.0f);
     //2
     vertices.push_back(-1.0f); vertices.push_back(1.0f); vertices.push_back(-1.0f);
-    vertices.push_back(0.9f); vertices.push_back(0.3f); vertices.push_back(0.8f);
+    vertices.push_back(1.0f); vertices.push_back(1.0f); vertices.push_back(1.0f);
     vertices.push_back(0.0f); vertices.push_back(0.0f); vertices.push_back(-1.0f);
     //4
     vertices.push_back(1.0f); vertices.push_back(-1.0f); vertices.push_back(-1.0f);
-    vertices.push_back(0.9f); vertices.push_back(0.3f); vertices.push_back(0.8f);
+    vertices.push_back(1.0f); vertices.push_back(1.0f); vertices.push_back(1.0f);
     vertices.push_back(0.0f); vertices.push_back(0.0f); vertices.push_back(-1.0f);
     //6
     vertices.push_back(1.0f); vertices.push_back(1.0f); vertices.push_back(-1.0f);
-    vertices.push_back(0.9f); vertices.push_back(0.3f); vertices.push_back(0.8f);
+    vertices.push_back(1.0f); vertices.push_back(1.0f); vertices.push_back(1.0f);
     vertices.push_back(0.0f); vertices.push_back(0.0f); vertices.push_back(-1.0f);
 
     //+Z
     //1
     vertices.push_back(-1.0f); vertices.push_back(-1.0f); vertices.push_back(1.0f);
-    vertices.push_back(0.9f); vertices.push_back(0.3f); vertices.push_back(0.8f);
+    vertices.push_back(1.0f); vertices.push_back(1.0f); vertices.push_back(1.0f);
     vertices.push_back(0.0f); vertices.push_back(0.0f); vertices.push_back(1.0f);
     //3
     vertices.push_back(-1.0f); vertices.push_back(1.0f); vertices.push_back(1.0f);
-    vertices.push_back(0.9f); vertices.push_back(0.3f); vertices.push_back(0.8f);
+    vertices.push_back(1.0f); vertices.push_back(1.0f); vertices.push_back(1.0f);
     vertices.push_back(0.0f); vertices.push_back(0.0f); vertices.push_back(1.0f);
     //5
     vertices.push_back(1.0f); vertices.push_back(-1.0f); vertices.push_back(1.0f);
-    vertices.push_back(0.9f); vertices.push_back(0.3f); vertices.push_back(0.8f);
+    vertices.push_back(1.0f); vertices.push_back(1.0f); vertices.push_back(1.0f);
     vertices.push_back(0.0f); vertices.push_back(0.0f); vertices.push_back(1.0f);
     //7
     vertices.push_back(1.0f); vertices.push_back(1.0f); vertices.push_back(1.0f);
-    vertices.push_back(0.9f); vertices.push_back(0.3f); vertices.push_back(0.8f);
+    vertices.push_back(1.0f); vertices.push_back(1.0f); vertices.push_back(1.0f);
     vertices.push_back(0.0f); vertices.push_back(0.0f); vertices.push_back(1.0f);
 
     
@@ -464,10 +463,6 @@ int main(int argc, char **argv)
     indices.push_back(19);
     indices.push_back(18);
 
-    indices.push_back(20);
-    indices.push_back(21);
-    indices.push_back(23);
-    indices.push_back(24);
     /*
     for (int i = 0; i < 2; i++)
     {
@@ -491,42 +486,19 @@ int main(int argc, char **argv)
         indices.push_back(i + 6);
         indices.push_back(i + 4);
     */
-    /*
-    vector< float > verticesCubeOBJ;
-    vec3 colorCube = vec3(0.9,0.3,0.8);
-    vector< vec2 > uvsCube;
-    vector< vec3 > normalsCube; // Won't be used at the moment.
-    vector< unsigned int > indicesCubeOBJ;
-    bool res = loadOBJ("cubo.obj", verticesCubeOBJ, uvsCube, normalsCube, indicesCubeOBJ);
-    */
-    square = new Shape(vertices , indices );
+
+    square = new Shape(vertices , indices, vec3(1.0,1.0,1.0));
+
+
     //square2 = new Shape(vertices2, indices);
-    /*
-    vector< vec3 > verticesOBJ;
-    vector< vec3 > colors;
-    vector< vec2 > uvs;
-    vector< vec3 > normals; // Won't be used at the moment.
-    vector< unsigned int > indicesOBJ;
-    //vec3 color = vec3(0.5, 0.5, 0.8);
-    bool res = loadOBJ("esfera.obj", verticesOBJ, uvs, normals, indicesOBJ);
-    sphere = new Shape(verticesOBJ, indicesOBJ);
-    */
-    //vector<particle> particles(particles_num);
+
     particleInit();
 
     //glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vec3), &vertices[0], GL_STATIC_DRAW);
     
     // In OpenGL, the Z-Axis points out of the screen.
     // Put the cube 5 units away from the camera.
-	transformCube.SetPosition(vec3(0.0f, -0.0f, 0.0f));
-    cout  << ' ' << transformCube.Position()[0] << ',' << transformCube.Position()[1] << ',' << transformCube.Position()[2] << endl;
-    cameraPosition.SetPosition(vec3(0.0f, 0.0f, 8.0f));
 
-
-/*
-    transformParticle1.SetPosition(randomPosition());
-    transformParticle1.Translate(vec3(0, 0, -5));
-*/
 
 	// Compile the vertex shader.
 	vertexShader.InitFromFile("vertex.glsl", GL_VERTEX_SHADER);
@@ -545,8 +517,6 @@ int main(int argc, char **argv)
 	glLinkProgram(shaderProgram);
 
 	// After the program has been linked, we can ask it where it put our world matrix and camera matrix
-	worldMatrixUniform = glGetUniformLocation(shaderProgram, "worldMatrix");
-    cameraMatrixUniform = glGetUniformLocation(shaderProgram, "cameraView");
 
 
     //cout << "Use WASD to move, and the mouse to look around." << endl;
@@ -556,6 +526,7 @@ int main(int argc, char **argv)
     cudaError_t err = cudaSuccess;
     cudaError_t cudaStatus;
 	// Main Loop
+    float camera_theta = -3.0f * M_PI / 4.0f;
 	while (!glfwWindowShouldClose(window))
 	{
 
@@ -571,23 +542,10 @@ int main(int argc, char **argv)
         glfwSetTime(0);
 
         // Get the distance from the center of the screen that the mouse has moved
-        glm::vec2 mouseMovement = mousePosition - (viewportDimensions / 2.0f);
+        //glm::vec2 mouseMovement = mousePosition - (viewportDimensions / 2.0f);
 
-        // Calculate the horizontal view angle
-        float yaw = cameraPosition.Rotation().y;
-        yaw += (int)mouseMovement.x * .001f;
-
-        // Calculate the vertical view angle
-        float pitch = cameraPosition.Rotation().x;
-        pitch -= (int)mouseMovement.y * .001f;
 
         // Clamp the camera from looking up over 90 degrees.
-        float halfpi = 3.1416 / 2.f;
-        if (pitch < -halfpi) pitch = -halfpi;
-        else if (pitch > halfpi) pitch = halfpi;
-
-        // Set the new rotation of the camera.
-        cameraPosition.SetRotation(glm::vec3(pitch, yaw, 0));
         
 
         // Move the cursor to the center of the screen
@@ -595,15 +553,15 @@ int main(int argc, char **argv)
 
 
         // Here we get some input, and use it to move the camera
-        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-            cameraPosition.Translate(cameraPosition.GetForward() * 5.0f * dt);
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+            //cameraPosition.Translate(cameraPosition.GetForward() * 5.0f * dt);
         }
         //if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
             //transformCube.RotateY(-1.0f * dt);
             //transformParticle1.SetPosition(calculatePosition(transformParticle1.Position(), -0.5f * dt));
         //}
-        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-            cameraPosition.Translate(cameraPosition.GetForward() * -5.0f * dt);
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+           // cameraPosition.Translate(cameraPosition.GetForward() * -5.0f * dt);
         }
 
         /*if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
@@ -619,7 +577,16 @@ int main(int argc, char **argv)
         // When we multiply by a world matrix, we are moving an object from local space to world space.
         // When using a camera, we do the exact opposite. We move everything else from world space into camera local space.
         // To do this we make a matrix that does the inverse of what a world matrix does.
-        glm::mat4 viewMatrix = cameraPosition.GetInverseMatrix();
+
+
+        vec3 viewPos = vec3(0, 2.5, 0);
+        vec3 up = vec3(0, 0, 1);
+        vec3 at = vec3(0, 0, 0);
+
+        mat4 view = lookAt(viewPos, at, up);
+        float aspect = viewportDimensions.x / viewportDimensions.y;
+        mat4 projection = perspective(45.0, aspect, 0.1, 100.0);
+        mat4 model = uniformScale(1.0);
 
        
         // Perspective projection expands outward from the camera getting wider, and making things that are far away look smaller.
@@ -632,28 +599,14 @@ int main(int argc, char **argv)
         +----+      +-----------+
         */
         // First we move everything
-        float near = 1; // the nearest distance we will render anything
-        float far = 10; // the furthest distance we will render anything.
-        float width = 1; // width of the view in world space (usually maps directly to screen size)
-        float height = viewportDimensions.y / viewportDimensions.x; // height of the view in world space (usually maps directly to screen size)
-        
-        // We do this by converting our coordinates into 
-        glm::mat4 perspectiveProjection = glm::mat4(
-            2/width, 0, 0, 0,                   // scale width down to fit in unit cube
-            0, 2/height, 0, 0,                  // scale height
-            0, 0, -(far+near)/(far-near), -1,   // scale depth, -1 converts our coordinates into homogeneous coordinates, which we need to keep our angles
-            0, 0, (2*near*far)/(near-far), 1    // translate everything so that
-            );
-
         // Compose view and projection into one matrix to send to the gpu
-        glm::mat4 viewProjection = perspectiveProjection * viewMatrix;
 
 
 
 
         // Clear the screen.
         glClear(GL_COLOR_BUFFER_BIT);
-        glClearColor(0.4, 0.4, 0.4, 0.0);
+        glClearColor(0.0, 0.0, 0.0, 1.0);
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 
@@ -661,19 +614,37 @@ int main(int argc, char **argv)
 		glUseProgram(shaderProgram);
 
         // Send the camera matrix to the shader
-        glUniformMatrix4fv(cameraMatrixUniform, 1, GL_FALSE, &(viewProjection[0][0]));
-        
+        glUniform3f(glGetUniformLocation(shaderProgram, "La"), 0.56f, 0.91f, 0.89f);
+        glUniform3f(glGetUniformLocation(shaderProgram, "Ld"), 1.0f, 1.0f, 1.0f);
+        glUniform3f(glGetUniformLocation(shaderProgram, "Ls"), 0.12f, 0.58f, 0.31f);
+
+        glUniform3f(glGetUniformLocation(shaderProgram, "Ka"), 1.0f, 1.0f, 1.0f);
+        glUniform3f(glGetUniformLocation(shaderProgram, "Kd"), 1.0f, 1.0f, 1.0f);
+        glUniform3f(glGetUniformLocation(shaderProgram, "Ks"), 1.0f, 1.0f, 1.0f);
+
+        glUniform3f(glGetUniformLocation(shaderProgram, "lightPosition"), 0.0f, 8.0f, 0.0f);
+        glUniform3f(glGetUniformLocation(shaderProgram, "viewPosition"), viewPos[0], viewPos[1], viewPos[2]);
+        glUniform1ui(glGetUniformLocation(shaderProgram, "shininess"), 5);
+        glUniform1f(glGetUniformLocation(shaderProgram, "constantAttenuation"), 0.001f);;
+        glUniform1f(glGetUniformLocation(shaderProgram, "linearAttenuation"), 0.1f);
+        glUniform1f(glGetUniformLocation(shaderProgram, "quadraticAttenuation"), 0.01f);
+
+        glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_TRUE, &(projection[0][0]));
+        glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, GL_TRUE, &(view[0][0]));
+        glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_TRUE, &(model[0][0]));
 
 		// Draw using the worldMatrixUniform
         vec3 color = vec3(0.9f, 0.27f, 0.89f);
-        square->Draw(shaderProgram, GL_QUADS, transformCube.GetMatrix(), worldMatrixUniform);
+        glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "transform"), 1, GL_TRUE, &(identity()[0][0]));
+        square->Draw(shaderProgram, GL_QUADS, viewPos, projection, view, model);
 
         vec3 color3 = vec3(0.75f, 0.34f, 0.96f);
         //cout << &(particles[0].sphere) << endl;
         for (int i = 0; i < particles_num; i++) {
-            (particlesShapes[i])->Draw(shaderProgram, GL_TRIANGLES, (particlesTransforms[i]).GetMatrix(), worldMatrixUniform);
+            glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "transform"), 1, GL_TRUE, &(translate(particlesPosition[i][0], particlesPosition[i][1], particlesPosition[i][2])[0][0]));
+            (particlesShapes[i])->Draw(shaderProgram, GL_TRIANGLES, viewPos,projection,view, model);
         }
-        
+        glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "transform"), 1, GL_TRUE, &(identity()[0][0]));
         /*
         Aquí se llama el kernel
         */
@@ -772,22 +743,25 @@ int main(int argc, char **argv)
             vec3 pos = particlesPosition[i];
 
             //particlesTransforms[i].Translate(vec3(0, 0, -5));
-            if (abs(pos[0]) + radio > 1.0f) {
+            if (abs(pos[0]) + radio > 2.0f) {
                 particlesVelocity[i][0] = -particlesVelocity[i][0];
-                pos[0] = (pos[0] / abs(pos[0]) * (1 - radio));
+                pos[0] = (pos[0] / abs(pos[0]) * (1 - radio))*2;
             }
-            if (abs(pos[1]) + radio > 1.0f) {
+            if (abs(pos[1]) + radio > 2.0f) {
                 particlesVelocity[i][1] = -particlesVelocity[i][1];
-                pos[1] = (pos[1] / abs(pos[1]) * (1 - radio)); 
+                pos[1] = (pos[1] / abs(pos[1]) * (1 - radio))*2; 
+                if (pos[1] > 0) {
+                    //cout << pos[1] << endl;
+                }
             }
-            if (abs(pos[2]) + radio > 1.0f) {
+            if (abs(pos[2]) + radio > 2.0f) {
                 particlesVelocity[i][2] = -particlesVelocity[i][2];
-                pos[2] = (pos[2] / abs(pos[2]) * (1 - radio));
+                pos[2] = (pos[2] / abs(pos[2]) * (1 - radio))*2;
+                
 
             }
             vec3 newPos = calculateNewPos(pos, particlesVelocity[i], dt, gravity);
             particlesPosition[i] = newPos;
-            particlesTransforms[i].SetPosition(newPos);
             //cout << i << ' ' << particlesPosition[i][0] << ',' << particlesPosition[i][1] << ',' << particlesPosition[i][2] << endl;
 
         }

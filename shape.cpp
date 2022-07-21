@@ -24,10 +24,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "shape.h"
 
-Shape::Shape(std::vector<float> vertices, std::vector<unsigned int> indices)
+Shape::Shape(std::vector<float> vertices, std::vector<unsigned int> indices, glm::vec3 color)
 {
 	m_vertices = vertices;
 	m_indices = indices;
+	m_color = color;
 	// Create the shape by setting up buffers
 
 	// Set up vertex buffer
@@ -53,7 +54,7 @@ Shape::~Shape()
 
 
 
-void Shape::Draw(GLuint shaderProgram, GLenum mode, glm::mat4 worldMatrix, GLuint uniformLocation)
+void Shape::Draw(GLuint shaderProgram, GLenum mode, glm::vec3 viewPos, glm::mat4 projection, glm::mat4 view, glm::mat4 model)
 {
 	// Previously, we multiplied each vertex one by one, but now we just have to send the world matrix to the gpu.
 	// Bind the vertex buffer and set the Vertex Attribute.
@@ -65,28 +66,11 @@ void Shape::Draw(GLuint shaderProgram, GLenum mode, glm::mat4 worldMatrix, GLuin
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 36, (void*)24);
 	glEnableVertexAttribArray(2);
 
-
-	// Set the world matrix uniform
-	glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, &(worldMatrix[0][0]));
-
 	// Bind index buffer to GL_ELEMENT_ARRAY_BUFFER, and enable vertex attribute
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffer);
 	glEnableVertexAttribArray(0);
-	//glUniform3f(glGetUniformLocation(shaderProgram, "fragColor"), color[0], color[1], color[2]);
-	glUniform3f(glGetUniformLocation(shaderProgram, "La"), 0.56f, 0.91f, 0.89f);
-	glUniform3f(glGetUniformLocation(shaderProgram, "Ld"), 1.0f, 1.0f, 1.0f);
-	glUniform3f(glGetUniformLocation(shaderProgram, "Ls"), 0.12f, 0.58f, 0.31f);
+	glUniform3f(glGetUniformLocation(shaderProgram, "fragColor"), m_color[0], m_color[1], m_color[2]);
 
-	glUniform3f(glGetUniformLocation(shaderProgram, "Ka"), 1.0f, 1.0f, 1.0f);
-	glUniform3f(glGetUniformLocation(shaderProgram, "Kd"), 1.0f, 1.0f, 1.0f);
-	glUniform3f(glGetUniformLocation(shaderProgram, "Ks"), 1.0f, 1.0f, 1.0f);
-
-	glUniform3f(glGetUniformLocation(shaderProgram, "lightPosition"), 0.0f, 8.0f, 0.0f);
-	//glUniform3f(glGetUniformLocation(shaderProgram, "viewPosition"), viewPos[0], viewPos[1], viewPos[2])
-	glUniform1ui(glGetUniformLocation(shaderProgram, "shininess"), 5);
-	glUniform1f(glGetUniformLocation(shaderProgram, "constantAttenuation"), 0.001f);;
-	glUniform1f(glGetUniformLocation(shaderProgram, "linearAttenuation"), 0.1f);
-	glUniform1f(glGetUniformLocation(shaderProgram, "quadraticAttenuation"), 0.01f);
 	// Draw all indices in the index buffer
 	glDrawElements(mode, m_indices.size(), GL_UNSIGNED_INT, (void*)0);
 
