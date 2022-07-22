@@ -1,1 +1,190 @@
-﻿  CudaProject.vcxproj -> D:\Documentos\Material U\Noveno Semestre\GPU\ProyectoGPU\x64\Debug\CudaProject.exe
+﻿  Compiling CUDA source file kernel.cu...
+  
+  D:\Documentos\Material U\Noveno Semestre\GPU\ProyectoGPU>"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.7\bin\nvcc.exe" -gencode=arch=compute_52,code=\"sm_52,compute_52\" --use-local-env -ccbin "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.32.31326\bin\HostX64\x64" -x cu   -IC:\GL\GLFWx64\include -IC:\GL\GLEWbin\include -IC:\GL\GLM -IC:\GL\GLFWx64\include -IC:\GL\GLEWbin\include -IC:\GL\GLM -IC:\GLP\CudaProject\common -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.7\include" -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.7\include"  -G   --keep-dir x64\Debug  -maxrregcount=0  --machine 64 --compile -cudart static  -g  -DWIN32 -DWIN64 -D_DEBUG -D_CONSOLE -D_MBCS -Xcompiler "/EHsc /W3 /nologo /Od /Fdx64\Debug\vc143.pdb /FS /Zi /RTC1 /MDd " -o "D:\Documentos\Material U\Noveno Semestre\GPU\ProyectoGPU\x64\Debug\kernel.cu.obj" "D:\Documentos\Material U\Noveno Semestre\GPU\ProyectoGPU\kernel.cu" 
+C:\GL\GLM\glm\ext\../detail/type_vec2.hpp(94): warning #20012-D: __device__ annotation is ignored on a function("vec") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_vec2.hpp(94): warning #20012-D: __host__ annotation is ignored on a function("vec") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_vec2.hpp(95): warning #20012-D: __device__ annotation is ignored on a function("vec") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_vec2.hpp(95): warning #20012-D: __host__ annotation is ignored on a function("vec") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_vec2.hpp(143): warning #20012-D: __device__ annotation is ignored on a function("operator=") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_vec2.hpp(143): warning #20012-D: __host__ annotation is ignored on a function("operator=") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_vec3.hpp(98): warning #20012-D: __device__ annotation is ignored on a function("vec") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_vec3.hpp(98): warning #20012-D: __host__ annotation is ignored on a function("vec") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_vec3.hpp(99): warning #20012-D: __device__ annotation is ignored on a function("vec") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_vec3.hpp(99): warning #20012-D: __host__ annotation is ignored on a function("vec") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_vec3.hpp(176): warning #20012-D: __device__ annotation is ignored on a function("operator=") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_vec3.hpp(176): warning #20012-D: __host__ annotation is ignored on a function("operator=") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_vec4.hpp(97): warning #20012-D: __device__ annotation is ignored on a function("vec") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_vec4.hpp(97): warning #20012-D: __host__ annotation is ignored on a function("vec") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_vec4.hpp(98): warning #20012-D: __device__ annotation is ignored on a function("vec") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_vec4.hpp(98): warning #20012-D: __host__ annotation is ignored on a function("vec") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_vec4.hpp(249): warning #20012-D: __device__ annotation is ignored on a function("operator=") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_vec4.hpp(249): warning #20012-D: __host__ annotation is ignored on a function("operator=") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_mat2x2.hpp(35): warning #20012-D: __device__ annotation is ignored on a function("mat") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_mat2x2.hpp(35): warning #20012-D: __host__ annotation is ignored on a function("mat") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_mat2x3.hpp(36): warning #20012-D: __device__ annotation is ignored on a function("mat") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_mat2x3.hpp(36): warning #20012-D: __host__ annotation is ignored on a function("mat") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_mat2x4.hpp(36): warning #20012-D: __device__ annotation is ignored on a function("mat") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_mat2x4.hpp(36): warning #20012-D: __host__ annotation is ignored on a function("mat") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_mat3x2.hpp(36): warning #20012-D: __device__ annotation is ignored on a function("mat") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_mat3x2.hpp(36): warning #20012-D: __host__ annotation is ignored on a function("mat") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_mat3x3.hpp(35): warning #20012-D: __device__ annotation is ignored on a function("mat") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_mat3x3.hpp(35): warning #20012-D: __host__ annotation is ignored on a function("mat") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_mat3x4.hpp(36): warning #20012-D: __device__ annotation is ignored on a function("mat") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_mat3x4.hpp(36): warning #20012-D: __host__ annotation is ignored on a function("mat") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_mat4x2.hpp(36): warning #20012-D: __device__ annotation is ignored on a function("mat") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_mat4x2.hpp(36): warning #20012-D: __host__ annotation is ignored on a function("mat") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_mat4x3.hpp(36): warning #20012-D: __device__ annotation is ignored on a function("mat") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_mat4x3.hpp(36): warning #20012-D: __host__ annotation is ignored on a function("mat") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_mat4x4.hpp(35): warning #20012-D: __device__ annotation is ignored on a function("mat") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_mat4x4.hpp(35): warning #20012-D: __host__ annotation is ignored on a function("mat") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\detail/type_vec1.hpp(95): warning #20012-D: __device__ annotation is ignored on a function("vec") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\detail/type_vec1.hpp(95): warning #20012-D: __host__ annotation is ignored on a function("vec") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\detail/type_vec1.hpp(96): warning #20012-D: __device__ annotation is ignored on a function("vec") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\detail/type_vec1.hpp(96): warning #20012-D: __host__ annotation is ignored on a function("vec") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\detail/type_vec1.hpp(132): warning #20012-D: __device__ annotation is ignored on a function("operator=") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\detail/type_vec1.hpp(132): warning #20012-D: __host__ annotation is ignored on a function("operator=") that is explicitly defaulted on its first declaration
+  
+D:\Documentos\Material U\Noveno Semestre\GPU\ProyectoGPU\kernel.cu(460): warning #550-D: variable "cudaStatus" was set but never used
+  
+C:\GL\GLM\glm\ext\../detail/type_vec2.hpp(94): warning #20012-D: __device__ annotation is ignored on a function("vec") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_vec2.hpp(94): warning #20012-D: __host__ annotation is ignored on a function("vec") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_vec2.hpp(95): warning #20012-D: __device__ annotation is ignored on a function("vec") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_vec2.hpp(95): warning #20012-D: __host__ annotation is ignored on a function("vec") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_vec2.hpp(143): warning #20012-D: __device__ annotation is ignored on a function("operator=") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_vec2.hpp(143): warning #20012-D: __host__ annotation is ignored on a function("operator=") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_vec3.hpp(98): warning #20012-D: __device__ annotation is ignored on a function("vec") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_vec3.hpp(98): warning #20012-D: __host__ annotation is ignored on a function("vec") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_vec3.hpp(99): warning #20012-D: __device__ annotation is ignored on a function("vec") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_vec3.hpp(99): warning #20012-D: __host__ annotation is ignored on a function("vec") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_vec3.hpp(176): warning #20012-D: __device__ annotation is ignored on a function("operator=") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_vec3.hpp(176): warning #20012-D: __host__ annotation is ignored on a function("operator=") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_vec4.hpp(97): warning #20012-D: __device__ annotation is ignored on a function("vec") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_vec4.hpp(97): warning #20012-D: __host__ annotation is ignored on a function("vec") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_vec4.hpp(98): warning #20012-D: __device__ annotation is ignored on a function("vec") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_vec4.hpp(98): warning #20012-D: __host__ annotation is ignored on a function("vec") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_vec4.hpp(249): warning #20012-D: __device__ annotation is ignored on a function("operator=") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_vec4.hpp(249): warning #20012-D: __host__ annotation is ignored on a function("operator=") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_mat2x2.hpp(35): warning #20012-D: __device__ annotation is ignored on a function("mat") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_mat2x2.hpp(35): warning #20012-D: __host__ annotation is ignored on a function("mat") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_mat2x3.hpp(36): warning #20012-D: __device__ annotation is ignored on a function("mat") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_mat2x3.hpp(36): warning #20012-D: __host__ annotation is ignored on a function("mat") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_mat2x4.hpp(36): warning #20012-D: __device__ annotation is ignored on a function("mat") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_mat2x4.hpp(36): warning #20012-D: __host__ annotation is ignored on a function("mat") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_mat3x2.hpp(36): warning #20012-D: __device__ annotation is ignored on a function("mat") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_mat3x2.hpp(36): warning #20012-D: __host__ annotation is ignored on a function("mat") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_mat3x3.hpp(35): warning #20012-D: __device__ annotation is ignored on a function("mat") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_mat3x3.hpp(35): warning #20012-D: __host__ annotation is ignored on a function("mat") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_mat3x4.hpp(36): warning #20012-D: __device__ annotation is ignored on a function("mat") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_mat3x4.hpp(36): warning #20012-D: __host__ annotation is ignored on a function("mat") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_mat4x2.hpp(36): warning #20012-D: __device__ annotation is ignored on a function("mat") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_mat4x2.hpp(36): warning #20012-D: __host__ annotation is ignored on a function("mat") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_mat4x3.hpp(36): warning #20012-D: __device__ annotation is ignored on a function("mat") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_mat4x3.hpp(36): warning #20012-D: __host__ annotation is ignored on a function("mat") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_mat4x4.hpp(35): warning #20012-D: __device__ annotation is ignored on a function("mat") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\ext\../detail/type_mat4x4.hpp(35): warning #20012-D: __host__ annotation is ignored on a function("mat") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\detail/type_vec1.hpp(95): warning #20012-D: __device__ annotation is ignored on a function("vec") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\detail/type_vec1.hpp(95): warning #20012-D: __host__ annotation is ignored on a function("vec") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\detail/type_vec1.hpp(96): warning #20012-D: __device__ annotation is ignored on a function("vec") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\detail/type_vec1.hpp(96): warning #20012-D: __host__ annotation is ignored on a function("vec") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\detail/type_vec1.hpp(132): warning #20012-D: __device__ annotation is ignored on a function("operator=") that is explicitly defaulted on its first declaration
+  
+C:\GL\GLM\glm\detail/type_vec1.hpp(132): warning #20012-D: __host__ annotation is ignored on a function("operator=") that is explicitly defaulted on its first declaration
+  
+  kernel.cu
+D:\Documentos\Material U\Noveno Semestre\GPU\ProyectoGPU\kernel.cu(222): warning C4244: 'argumento': conversión de 'time_t' a 'unsigned int'; posible pérdida de datos
+D:\Documentos\Material U\Noveno Semestre\GPU\ProyectoGPU\kernel.cu(268): warning C4244: 'argumento': conversión de 'T' a 'int'; posible pérdida de datos
+          with
+          [
+              T=float
+          ]
+D:\Documentos\Material U\Noveno Semestre\GPU\ProyectoGPU\kernel.cu(268): warning C4244: 'argumento': conversión de 'T' a 'int'; posible pérdida de datos
+          with
+          [
+              T=float
+          ]
+D:\Documentos\Material U\Noveno Semestre\GPU\ProyectoGPU\kernel.cu(462): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+D:\Documentos\Material U\Noveno Semestre\GPU\ProyectoGPU\kernel.cu(473): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
+D:\Documentos\Material U\Noveno Semestre\GPU\ProyectoGPU\kernel.cu(513): warning C4305: 'argumento': truncamiento de 'double' a 'float'
+D:\Documentos\Material U\Noveno Semestre\GPU\ProyectoGPU\kernel.cu(157): warning C4715: 'loadOBJ': no todas las rutas de acceso de control devuelven un valor
+  CudaProject.vcxproj -> D:\Documentos\Material U\Noveno Semestre\GPU\ProyectoGPU\x64\Debug\CudaProject.exe
