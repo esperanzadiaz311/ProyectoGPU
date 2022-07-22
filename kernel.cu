@@ -66,7 +66,7 @@ __global__ void kernel_particula(int particles_num, vec3* particlesPositions, ve
 }
 /*
 
-
+    Config:
 
 */
 int particles_num = 500;
